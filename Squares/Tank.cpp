@@ -19,6 +19,11 @@ void Tank::Init(Tanky::Cfg cfg)
     maxHealth = cfg.health;
     currentHealth = cfg.health;
     velocity = cfg.minSpeed;
+
+    if( cfg.enableLeveling )
+    {
+        levelCounter.Enable();
+    }
 }
 
 void Tank::Move(Tank::Direction dir)
@@ -58,6 +63,9 @@ void Tank::Draw(sf::RenderWindow &window)
 {
     window.draw(rect);
     gun.Draw(window);
+
+
+    levelCounter.Draw(window);
 }
 
 void Tank::Hitted()
@@ -80,6 +88,8 @@ void Tank::Shoot(Gun::Direction dir)
     int xCenter = int(rect.getPosition().x + (rect.getSize().x / 2));
     int yCenter = int(rect.getPosition().y + (rect.getSize().y / 2));
     gun.shoot(xCenter, yCenter, dir, rect.getFillColor());
+
+    levelCounter.GainExp();
 }
 
 Tank::CollisionInfo Tank::GetCollisionInfo()

@@ -2,7 +2,6 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
-
 #include "WindowCfg.h"
 
 #include "Tank.h"
@@ -16,6 +15,7 @@ int main()
     Tanky::Cfg playerCfg;
     playerCfg.yPos = Window::height - playerCfg.height;
     playerCfg.minSpeed = 8;
+    playerCfg.enableLeveling = true;
     Tank playerTank(playerCfg);
 
     Tanky::Cfg enemy1cfg;
@@ -34,7 +34,7 @@ int main()
 
     std::vector<AITank> aiTanks;
     aiTanks.push_back(AITank(enemy1cfg));
-    aiTanks.push_back(AITank(enemy2cfg));
+//    aiTanks.push_back(AITank(enemy2cfg));
 
     bool LeftKeyDown = false;
     bool RightKeyDown = false;
@@ -64,7 +64,7 @@ int main()
                if (event.mouseButton.button == sf::Mouse::Left)
                {
                   playerTank.Shoot(Gun::Direction::up);
-                  for(auto& aiTank : aiTanks){ aiTank.Shoot(); }
+                  //for(auto& aiTank : aiTanks){ aiTank.Shoot(); }
                }
            }
        }

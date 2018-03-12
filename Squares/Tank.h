@@ -2,6 +2,7 @@
 
 #include "SFML/Graphics.hpp"
 #include "Gun.h"
+#include "LevelCounter.h"
 
 namespace Tanky
 {
@@ -15,6 +16,7 @@ struct Cfg
     int xPos = 0;
     int yPos = 0;
     sf::Color color = sf::Color::Red;
+    bool enableLeveling = false;
 };
 
 }
@@ -26,10 +28,9 @@ public:
     enum class CollisionInfo { leftWall , rightWall , none};
 
     Tank() = default;
-    Tank(Tanky::Cfg cfg);
+    Tank(Tanky::Cfg expBarRectcfg);
 
     void Init(Tanky::Cfg cfg);
-
     void Move(Direction dir);
     void Update();
     void Draw(sf::RenderWindow& window);
@@ -49,4 +50,6 @@ private:
 
     int currentHealth = 5;
     int velocity = 0; // horizontal direction
+
+    LevelCounter levelCounter;
 };

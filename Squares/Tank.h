@@ -28,7 +28,7 @@ public:
     enum class CollisionInfo { leftWall , rightWall , none};
 
     Tank() = default;
-    Tank(Tanky::Cfg expBarRectcfg);
+    Tank(Tanky::Cfg cfg);
 
     void Init(Tanky::Cfg cfg);
     void Move(Direction dir);

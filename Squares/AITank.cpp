@@ -1,11 +1,15 @@
 #include "AITank.h"
-
+#include "Timer.h"
 #include "SFML/Graphics.hpp"
 #include "WindowCfg.h"
 
-AITank::AITank(Tanky::Cfg tankCfg)
-    : tank(tankCfg)
+void AITank::Init(Tanky::Cfg cfg)
 {
+    tank.Init(cfg);
+    timer.EveryOnce(500, [this]()
+    {
+        Shoot();
+    });
 }
 
 void AITank::Update()
@@ -21,6 +25,8 @@ void AITank::Update()
 
     tank.Move(dir);
     tank.Update();
+
+    timer.Update(15);
 }
 
 void AITank::Draw(sf::RenderWindow &window)

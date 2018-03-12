@@ -1,40 +1,28 @@
 #include <iostream>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
-
 #include "WindowCfg.h"
-
+#include "Timer.h"
 #include "Tank.h"
 #include "AITank.h"
 
+Tanky::Cfg GetPlayerCfg();
+Tanky::Cfg GetRandomCfg();
+
+static const int AI_TANK_COUNT = 2;
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(Window::width, Window::height), "SFML window");
     window.setFramerateLimit(60);
 
-    Tanky::Cfg playerCfg;
-    playerCfg.yPos = Window::height - playerCfg.height;
-    playerCfg.minSpeed = 8;
-    playerCfg.enableLeveling = true;
-    Tank playerTank(playerCfg);
+    Tank playerTank( GetPlayerCfg() );
 
-    Tanky::Cfg enemy1cfg;
-    enemy1cfg.color = sf::Color::Black;
-    enemy1cfg.xPos = Window::width / 2;
-    enemy1cfg.health = 10;
-    enemy1cfg.minSpeed = 3;
-    enemy1cfg.maxSpeed = 10;
-
-    Tanky::Cfg enemy2cfg;
-    enemy2cfg.color = sf::Color::Blue;
-    enemy2cfg.xPos = Window::width / 2;
-    enemy2cfg.health = 10;
-    enemy2cfg.minSpeed = 5;
-    enemy2cfg.maxSpeed = 10;
-
-    std::vector<AITank> aiTanks;
-    aiTanks.push_back(AITank(enemy1cfg));
-//    aiTanks.push_back(AITank(enemy2cfg));
+    std::vector<AITank> aiTanks(AI_TANK_COUNT);
+    for(auto& aiTank : aiTanks )
+    {
+        auto cfg = GetRandomCfg();
+        aiTank.Init(cfg);
+    }
 
     bool LeftKeyDown = false;
     bool RightKeyDown = false;
@@ -64,17 +52,11 @@ int main()
                if (event.mouseButton.button == sf::Mouse::Left)
                {
                   playerTank.Shoot(Gun::Direction::up);
-                  //for(auto& aiTank : aiTanks){ aiTank.Shoot(); }
+//                  for(auto& aiTank : aiTanks){ aiTank.Shoot(); }
                }
            }
        }
        //Update part
-       playerTank.Update();
-       for(auto& aiTank : aiTanks)
-       {
-           aiTank.Update();
-       }
-
        if (LeftKeyDown)
        {
            playerTank.Move(Tank::Direction::left);
@@ -83,17 +65,59 @@ int main()
        {
            playerTank.Move(Tank::Direction::right);
        }
-       for(auto& aiTank : aiTanks){ aiTank.Update(); }
 
+       playerTank.Update();
+       for(auto& aiTank : aiTanks)
+       {
+           aiTank.Update();
+       }
 
        //Draw part
        window.clear(sf::Color::White);
 
        playerTank.Draw(window);
-       for(auto& aiTank : aiTanks){ aiTank.Draw(window); }
+       for(auto& aiTank : aiTanks)
+       {
+           aiTank.Draw(window);
+       }
 
        window.display();
     }
 
     return 0;
+}
+
+
+Tanky::Cfg GetPlayerCfg()
+{
+    Tanky::Cfg playerCfg;
+    playerCfg.yPos = Window::height - playerCfg.height;
+    playerCfg.minSpeed = 8;
+    playerCfg.enableLeveling = true;
+    return playerCfg;
+}
+
+Tanky::Cfg GetRandomCfg()
+{
+    static std::vector<sf::Color> colors =
+    {
+        sf::Color::Red,
+        sf::Color::Black,
+        sf::Color::Yellow,
+        sf::Color::Green,
+        sf::Color::Cyan
+    };
+    static size_t next_color_id = 0;
+    if( next_color_id == colors.size() - 1)
+    {
+        next_color_id = 0;
+    }
+
+    Tanky::Cfg enemy1cfg;
+    enemy1cfg.color = colors.at(next_color_id++);
+    enemy1cfg.xPos = Window::width / 2;
+    enemy1cfg.health = (rand() % 10 + 1);
+    enemy1cfg.minSpeed = (rand() % 10 + 1);
+    enemy1cfg.maxSpeed = (rand() % 15 + 5);
+    return enemy1cfg;
 }
